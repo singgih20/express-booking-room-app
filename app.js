@@ -4,6 +4,10 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
+// method session
+const session = require("express-session");
+const flash = require("connect-flash");
+
 // metho override
 const methodOverride = require("method-override");
 // import mongoose
@@ -27,6 +31,19 @@ app.set("view engine", "ejs");
 // method override
 app.use(methodOverride("_method"));
 
+// session
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 },
+  })
+);
+
+app.use(flash());
+
+// default
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
