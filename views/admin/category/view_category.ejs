@@ -10,16 +10,16 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>SB Admin 2 - Blank</title>
+    <title>Category</title>
 
-    <%- include('partials/header.ejs') %>
+    <%- include('../../partials/header.ejs') %>
   </head>
 
   <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
       <!-- Sidebar -->
-      <%- include('partials/sidebar.ejs') %>
+      <%- include('../../partials/sidebar.ejs') %>
       <!-- End of Sidebar -->
 
       <!-- Content Wrapper -->
@@ -27,20 +27,23 @@
         <!-- Main Content -->
         <div id="content">
           <!-- Topbar -->
-          <%- include('partials/navbar.ejs') %>
+          <%- include('../../partials/navbar.ejs') %>
           <!-- End of Topbar -->
 
           <!-- Begin Page Content -->
           <div class="container-fluid">
             <!-- Page Heading -->
-            <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
+            <h1 class="h3 mb-4 text-gray-800">Welcome to category</h1>
+            <!-- end heading -->
+
+            <%- include('table_category.ejs') %>
           </div>
           <!-- /.container-fluid -->
         </div>
         <!-- End of Main Content -->
 
         <!-- Footer -->
-        <%- include('partials/footer.ejs') %>
+        <%- include('../../partials/footer.ejs') %>
         <!-- End of Footer -->
       </div>
       <!-- End of Content Wrapper -->
@@ -90,6 +93,16 @@
         </div>
       </div>
     </div>
-    <%- include('partials/js.ejs') %>
+    <%- include('../../partials/js.ejs') %> <%- include('add_modal.ejs') %> <%-
+    include('edit_modal.ejs') %>
+    <script>
+      $("#dataTable").on("click", ".button-update", function () {
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        $("#edit-modal").modal().show();
+        $(".id").val(id);
+        $(".name").val(name);
+      });
+    </script>
   </body>
 </html>
