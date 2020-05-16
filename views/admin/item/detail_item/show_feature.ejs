@@ -10,7 +10,7 @@
         <div class="col-md-5">
           <form
             method="POST"
-            action="/admin/bank"
+            action="/admin/item/add/feature"
             enctype="multipart/form-data"
           >
             <div class="form-group">
@@ -45,6 +45,7 @@
                 required
               />
             </div>
+            <input type="hidden" name="itemId" value="<%= itemId %>" />
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
             </div>
@@ -68,7 +69,44 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody></tbody>
+              <tbody>
+                <% for(let i=0; i < feature.length; i++ ){ %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= feature[i].name %></td>
+                  <td><%= feature[i].qty %></td>
+                  <td>
+                    <img
+                      src="http://localhost:3000/<%= feature[i].imageUrl %>"
+                      alt="<%= feature[i].name %>"
+                      width="70px"
+                    />
+                  </td>
+                  <td>
+                    <form
+                      action="/admin/item/<%= itemId %>/feature/<%= feature[i].id %>?_method=DELETE"
+                      method="POST"
+                    >
+                      <a
+                        href="javascript:void()"
+                        type="button"
+                        class="btn btn-warning btn-circle btn-sm button-update"
+                        data-id="<%= feature[i].id %>"
+                        data-qty="<%= feature[i].qty %>"
+                        data-name="<%= feature[i].name %>"
+                        ><i class="fas fa-edit"></i
+                      ></a>
+                      <button
+                        type="submit"
+                        class="btn btn-danger btn-circle btn-sm"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
             </table>
           </div>
         </div>
