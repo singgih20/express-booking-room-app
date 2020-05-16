@@ -15,16 +15,22 @@ const itemSchema = new mongoose.Schema({
     required: true,
   },
   city: {
-    type: Number,
+    type: String,
     required: true,
   },
   isPopular: {
     type: Boolean,
+    default: false,
   },
   description: {
     type: String,
     required: true,
   },
+  categoryId: {
+    type: ObjectId,
+    ref: "Category",
+  },
+
   imageId: [
     {
       type: ObjectId,
