@@ -124,28 +124,43 @@
       </div>
     </div>
     <%- include('show_modal_feature.ejs') %> <%-
-    include('../../../partials/js.ejs') %>
-    <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
-
+    include('show_modal_activity.ejs') %> <%-include('../../../partials/js.ejs')
+    %>
     <script
       src="https://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"
       type="text/javascript"
     >
-      $(document).ready(function () {
-        $("#dataTableActivity").DataTable({ searching: false });
-      });
+
       CKEDITOR.replace("about");
     </script>
     <script type="text/javascript">
+      $(document).ready(function () {
+        $("#dataTableActivity").DataTable();
+      });
+
+      $("#dataTableActivity").on(
+        "click",
+        ".button-update-activity",
+        function () {
+          let id = $(this).data("id");
+          let name = $(this).data("name");
+          let type = $(this).data("type");
+          $("#edit-modal-activity").modal().show();
+          $(".id").val(id);
+          $(".type").val(type);
+          $(".name").val(name);
+        }
+      );
       $("#dataTable").on("click", ".button-update", function () {
         let id = $(this).data("id");
         let name = $(this).data("name");
         let qty = $(this).data("qty");
-        $("#edit-modal").modal().show();
+        $("#edit-modal-feature").modal().show();
         $(".id").val(id);
         $(".qty").val(qty);
         $(".name").val(name);
       });
     </script>
+    <script type="text/javascript"></script>
   </body>
 </html>
