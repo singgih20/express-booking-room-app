@@ -4,12 +4,65 @@ const Item = require("../models/Item");
 const Image = require("../models/Image");
 const Activity = require("../models/Activity");
 const Feature = require("../models/Feature");
+const User = require("../models/Users");
 const fs = require("fs-extra");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 
 module.exports = {
+  viewLogin: async (req, res) => {
+    try {
+      const alertMessage = req.flash("alertMessage");
+      const alertStatus = req.flash("alertStatus");
+      const alert = { message: alertMessage, status: alertStatus };
+      if (req.session.user == null || req.session.user == undefined) {
+        res.render("index", {
+          alert,
+        });
+      } else {
+        res.redirect("/admin/dashboard");
+      }
+    } catch (error) {
+      res.redirect("/admin/login");
+    }
+  },
+  actionLogin: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await User.findOne({ username });
+      if (!user) {
+        req.flash("alertMessage", "User not found");
+        req.flash("alertStatus", "danger");
+        res.redirect("/admin/login");
+      }
+
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        req.flash("alertMessage", "Wrong password");
+        req.flash("alertStatus", "danger");
+        res.redirect("/admin/login");
+      }
+
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+      };
+
+      res.redirect("/admin/dashboard");
+    } catch (error) {
+      res.redirect("/admin/login");
+    }
+  },
+  actionLogout: async (req, res) => {
+    req.session.destroy();
+    res.redirect("/admin/login");
+  },
   viewDashboard: (req, res) => {
-    res.render("admin/dashboard/view_dashboard");
+    try {
+      res.render("admin/dashboard/view_dashboard", {
+        user: req.session.user,
+      });
+    } catch (error) {}
   },
 
   // Category
@@ -23,6 +76,7 @@ module.exports = {
         categories,
         alert,
         title: "Staycation | Category",
+        user: req.session.user,
       });
     } catch (error) {
       res.redirect("/admin/category");
@@ -88,7 +142,11 @@ module.exports = {
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
       const alert = { message: alertMessage, status: alertStatus };
-      res.render("admin/bank/view_bank", { alert, bank });
+      res.render("admin/bank/view_bank", {
+        alert,
+        bank,
+        user: req.session.user,
+      });
     } catch (error) {
       res.flash("alertMessage", `${error.message}`);
       req.flash("alertStatus", "danger");
@@ -172,11 +230,16 @@ module.exports = {
       const category = await Category.find();
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
-      const alert = { message: alertMessage, status: alertStatus };
+      const alert = {
+        message: alertMessage,
+        status: alertStatus,
+        user: req.session.user,
+      };
       res.render("admin/item/view_item", {
         category,
         alert,
         item,
+        user: req.session.user,
         action: "view",
       });
     } catch (error) {
@@ -265,6 +328,7 @@ module.exports = {
       res.render("admin/item/view_item", {
         alert,
         item,
+        user: req.session.user,
         category,
         action: "edit",
       });
@@ -360,12 +424,12 @@ module.exports = {
       const alert = { message: alertMessage, status: alertStatus };
       const feature = await Feature.find({ itemId: itemId });
       const activity = await Activity.find({ itemId: itemId });
-      console.log(feature);
       res.render("admin/item/detail_item/view_detail_item", {
         itemId,
         alert,
         feature,
         activity,
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -538,6 +602,6 @@ module.exports = {
   },
   // Booking
   viewBooking: (req, res) => {
-    res.render("admin/booking/view_booking");
+    res.render("admin/booking/view_booking", { user: req.session.user });
   },
 };
